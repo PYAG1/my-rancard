@@ -34,11 +34,11 @@ export default function SignUp() {
       const response= await  axios.post(  `${import.meta.env.VITE_BASE_URL}/create-account`, values)
       if(response.status === 200){
         toast.success(response.data?.message);
-        nav("/dashboard/campaigns")
+        nav("/auth/signin")
       }
      } catch (error) {
             //@ts-ignore
-      toast.error(error?.message);
+      toast.error(error.response?.data?.message);
      }finally{
       setLoading(false)
       resetForm()

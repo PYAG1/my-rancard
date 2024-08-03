@@ -1,16 +1,15 @@
-import { FunnelIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 import {
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   ArrowUpRightIcon,
 } from "@heroicons/react/20/solid";
+import { FunnelIcon } from "@heroicons/react/24/outline";
 import CampaignItem from "../../components/dashboard/campaign/CampaignItem";
 import CreateCampaign from "@/components/dashboard/campaign/createCampaign";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { selectAuth } from "@/redux/AuthSlice";
-import toast from "react-hot-toast";
+import { useCampaignContext } from "@/context";
+import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { Campaign } from "@/types";
 
 const stats = [
@@ -42,68 +41,49 @@ function classNames(...classes: string[]) {
 }
 
 export default function CampaignsPage() {
-  const [loading, setLoading] = useState(false);
-  const [draftCampaigns, setDraftCampaigns] = useState([]);
-  const [inProgressCampaigns, setInProgressCampaigns] = useState([]);
-  const [completedCampaigns, setCompletedCampaigns] = useState([]);
+  const [draftCampaigns, setDraftCampaigns] = useState<Campaign[]>([]);
+  const [inProgressCampaigns, setInProgressCampaigns] = useState<Campaign[]>([]);
+  const [completedCampaigns, setCompletedCampaigns] = useState<Campaign[]>([]);
 
-  const { userToken } = useSelector(selectAuth);
-
-  const getAllCampaigns = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/campaigns`, {
-        
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      if (response.status === 200) {
-        const campaigns = response.data.data;
-        const drafts = campaigns?.filter((campaign:any) => campaign.status === "");
-        const inProgress = campaigns?.filter((campaign:any) => campaign.status === 'IN_PROGRESS');
-        const completed = campaigns?.filter((campaign:any) => campaign.status === 'COMPLETED');
-
-        setDraftCampaigns(drafts);
-        setInProgressCampaigns(inProgress);
-        setCompletedCampaigns(completed);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { fetchCampaigns, campaigns, loading } = useCampaignContext();
 
   useEffect(() => {
-    getAllCampaigns();
-  }, []);
+    fetchCampaigns();
+  }, [fetchCampaigns]);
+
+  useEffect(() => {
+    if (campaigns) {
+      setDraftCampaigns(campaigns.filter((campaign) => campaign.status === "DRAFT"|| ""));
+      setInProgressCampaigns(campaigns.filter((campaign) => campaign.status === "IN_PROGRESS"));
+      setCompletedCampaigns(campaigns.filter((campaign) => campaign.status === "COMPLETED"));
+    }
+  }, [campaigns]);
 
   return (
-    <div className=" w-full">
-      <div className=" w-full md:flex md:justify-between">
+    <div className="w-full">
+      <div className="w-full md:flex md:justify-between">
         <div>
-          <p className=" text-4xl font-semibold">Your total revenue</p>
+          <p className="text-4xl font-semibold">Your total revenue</p>
           <p className="bg-gradient-to-r from-[#e644d0] via-[#f28884] text-4xl font-semibold to-[#fec640] bg-clip-text text-transparent">
             Ghc 6,609,604.00
           </p>
         </div>
-        <div className=" flex gap-5 items-center mt-5 md:mt-0">
+        <div className="flex gap-5 items-center mt-5 md:mt-0">
           <button
             type="button"
-            className="rounded-md flex items-center  gap-3 bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            className="rounded-md flex items-center gap-3 bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
-            <FunnelIcon className=" h-4 w-4" /> Select dates
+            <FunnelIcon className="h-4 w-4" /> Select dates
           </button>
           <button
             type="button"
-            className="rounded-md flex  items-center gap-3 bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            className="rounded-md flex items-center gap-3 bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
-            <FunnelIcon className=" h-4 w-4" /> Filter
+            <FunnelIcon className="h-4 w-4" /> Filter
           </button>
         </div>
       </div>
-      <div className=" mt-10">
+      <div className="mt-10">
         <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {stats.map((item) => (
             <div
@@ -113,7 +93,7 @@ export default function CampaignsPage() {
               <dt className="truncate text-sm font-medium text-gray-500 mb-5">
                 {item.name}
               </dt>
-              <span className=" flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 <dd className="mt-1 text-xl font-semibold tracking-tight text-gray-900">
                   {item.stat}
                 </dd>
@@ -139,63 +119,69 @@ export default function CampaignsPage() {
                   {item.change}
                 </div>
               </span>
-              <p className=" text-sm font-light mt-2">Compared to last week</p>
+              <p className="text-sm font-light mt-2">Compared to last week</p>
             </div>
           ))}
         </dl>
       </div>
-      <div className=" w-full flex justify-between mt-4 items-center">
-        <h3 className=" text-2xl font-semibold ">Recent Campaigns</h3>
-        <span className=" text-lg w-max underline flex items-center">
-          <p>View all </p>
-          <ArrowUpRightIcon className="  h-5 w-5 underline" />
+      <div className="w-full flex justify-between mt-4 items-center">
+        <h3 className="text-2xl font-semibold">Recent Campaigns</h3>
+        <span className="text-lg w-max underline flex items-center">
+          <Link to="/dashboard/campaign/view-all">View all</Link>
+          <ArrowUpRightIcon className="h-5 w-5 underline" />
         </span>
       </div>
 
-      <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <h2 className="text-base mb-4 flex items-center gap-2 ">
-              Draft{" "}
-              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
-                {draftCampaigns?.length}
-              </div>
-            </h2>
-        <div className=" w-full flex flex-col gap-3">
-        {draftCampaigns?.map((campaign:Campaign) => (
-              <CampaignItem key={campaign.id} data={campaign} />
-            ))}
+      {loading ? (
+        <div className="w-full h-[50vh] flex justify-center items-center py-10">
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         </div>
-            <CreateCampaign />
-          </div>
-          <div className="">
-            <h2 className="text-base mb-4 flex items-center gap-2 ">
-              In Progress{" "}
-              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
-                {inProgressCampaigns?.length}
+      ) : (
+        <div className="container mx-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <h2 className="text-base mb-4 flex items-center gap-2">
+                Draft{" "}
+                <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black">
+                  {draftCampaigns.length}
+                </div>
+              </h2>
+              <div className="w-full flex flex-col gap-3">
+                {draftCampaigns.slice(0, 5).map((campaign) => (
+                  <CampaignItem key={campaign.id} data={campaign} />
+                ))}
               </div>
-            </h2>
-            <div className=" w-full flex flex-col gap-3">
-            {inProgressCampaigns?.map((campaign:Campaign) => (
-              <CampaignItem key={campaign.id} data={campaign} />
-            ))}
+              <CreateCampaign />
+            </div>
+            <div>
+              <h2 className="text-base mb-4 flex items-center gap-2">
+                In Progress{" "}
+                <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black">
+                  {inProgressCampaigns.length}
+                </div>
+              </h2>
+              <div className="w-full flex flex-col gap-3">
+                {inProgressCampaigns.slice(0, 5).map((campaign) => (
+                  <CampaignItem key={campaign.id} data={campaign} />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h2 className="text-base mb-4 flex items-center gap-2">
+                Completed{" "}
+                <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black">
+                  {completedCampaigns.length}
+                </div>
+              </h2>
+              <div className="w-full flex flex-col gap-3">
+                {completedCampaigns.slice(0, 5).map((campaign) => (
+                  <CampaignItem key={campaign.id} data={campaign} />
+                ))}
+              </div>
             </div>
           </div>
-          <div className="items-center">
-            <h2 className="text-base mb-4 flex items-center gap-2 ">
-              Completed
-              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
-                {completedCampaigns?.length}
-              </div>
-            </h2>
-            <div className=" w-full flex flex-col gap-3">
-            {completedCampaigns?.map((campaign:Campaign) => (
-              <CampaignItem key={campaign?.id} data={campaign} />
-            ))}
-            </div>
-          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

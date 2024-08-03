@@ -1,7 +1,7 @@
-import { Navigate, Outlet } from "react-router-dom";
-
+import { Link, Outlet, useLocation } from "react-router-dom";
+import background from "../../src/assets/2148422461.jpg"
 export default function AuthLayout() {
-
+const location= useLocation()
 
   return (
     <>
@@ -9,20 +9,21 @@ export default function AuthLayout() {
         <div className="relative hidden lg:block flex-1 ml-8 my-5">
           <img
             alt=""
-            src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
+            src={background}
             className="absolute inset-0 h-full w-full object-cover rounded-xl"
           />
         </div>
         <div className="relative w-full lg:w-1/2">
           <div className="w-full flex justify-between items-center p-5 ">
-            <p>Orbut</p>
+          <p className=' text-3xl text-violet-700 font-bold'>Orbút</p>
             <div className="flex gap-2 items-center">
               <p className="text-zinc-600 hidden lg:block">
-                Don't have an account yet?
+            
+                {location.pathname === "/auth/signup"? "  Have an account?":"  Don't have an account yet?"}
               </p>
-              <button className="p-3 text-violet-500 border-2 border-violet-500 rounded-3xl">
-                Sign Up now
-              </button>
+              <Link to="/auth/signup" className="p-3 text-violet-500 border-2 border-violet-500 rounded-3xl">
+            {location.pathname === "/auth/signup"? "Sign in now":"Sign up now"}
+              </Link>
             </div>
           </div>
           <div className=" w-full flex flex-col justify-center px-4 py-12 ">

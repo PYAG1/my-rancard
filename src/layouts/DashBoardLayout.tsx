@@ -127,7 +127,7 @@ export default function DashboardLayout() {
           </div>
         </Dialog>
 
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center justify-between">
             <p className=' text-3xl text-violet-700 font-bold'>Orbút</p>
@@ -166,7 +166,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <div className="lg:pl-72 lg:pt-5">
+        <div className="lg:pl-60 xl:pl-72 lg:pt-5">
           <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
             <div className="flex h-16 items-center justify-between gap-x-4 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
               <div className="flex items-center gap-x-4 self-stretch lg:gap-x-6">

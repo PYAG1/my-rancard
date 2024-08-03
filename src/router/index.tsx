@@ -5,6 +5,7 @@ import SignIn from "../pages/auth/SignIn";
 import DashboardLayout from "../layouts/DashBoardLayout";
 import CampaignsPage from "../pages/dashboard/Campaign";
 import App from "../pages/App";
+import ViewMore from "@/pages/dashboard/ViewMore";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,11 @@ export const router = createBrowserRouter([
         children:[{
             path:"campaign",
             element:<CampaignsPage/>
-        }]
+        },
+        {
+            path:"campaign/view-all",
+            element:<ViewMore/>
+        }
+    ]
     }
 ])

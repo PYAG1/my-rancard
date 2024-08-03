@@ -34,7 +34,7 @@ export default function Signin() {
         );
         if (response.status === 200) {
           const { name, access_token } = response.data.data;
-          console.log(name, access_token);
+    
           dispatch(signIn({name,access_token}))
           toast.success(response.data?.message);
           nav("/dashboard/campaign");
@@ -42,7 +42,7 @@ export default function Signin() {
         }
       } catch (error) {
               //@ts-ignore
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       } finally {
         setLoading(false);
         resetForm()

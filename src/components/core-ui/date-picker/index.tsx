@@ -17,7 +17,6 @@ export function DatePickerDemo({
   touched,
   label,
   errors,
-  handleBlur,
   handleChange,
   placeholder
 }: DatePickerTypes) {

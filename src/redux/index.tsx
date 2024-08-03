@@ -29,7 +29,7 @@ const persistConfig = {
 
 
 const persistedReducer = persistReducer(persistConfig, reducers);
-//@ts-ignore
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>

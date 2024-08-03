@@ -1,6 +1,6 @@
+import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import { useState } from 'react';
 import { TextFieldTypes } from './types';
-import { ExclamationCircleIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 
 export default function TextField({
   values,

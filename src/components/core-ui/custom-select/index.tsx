@@ -1,5 +1,5 @@
-import { CustomSelectTypes } from "./types";
 import { ChevronDownIcon } from "lucide-react"; // Import the down arrow icon
+import { CustomSelectTypes } from "./types";
 
 export default function CustomSelect({
   options,

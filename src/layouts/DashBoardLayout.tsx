@@ -1,6 +1,7 @@
-import React from 'react'
-import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Outlet, useLocation } from 'react-router-dom';
+import { selectUser } from '@/redux/AuthSlice';
 import {
   Dialog,
   DialogBackdrop,
@@ -10,62 +11,65 @@ import {
   MenuItem,
   MenuItems,
   TransitionChild,
-} from '@headlessui/react'
+} from '@headlessui/react';
 import {
   Bars3Icon,
   BellIcon,
   BriefcaseIcon,
+  ChatBubbleOvalLeftIcon,
   CurrencyDollarIcon,
   HomeIcon,
   XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline'
-import { LifeBuoyIcon, Waypoints } from 'lucide-react'
+} from '@heroicons/react/24/outline';
+import { LifeBuoyIcon, Waypoints } from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
-  { name: 'Campaigns', href: '/dashboard/campaign', icon: Waypoints, current: false },
-  { name: 'Chat', href: '/chat', icon: ChatBubbleOvalLeftIcon, current: false },
-  { name: 'Support Center', href: '/support-center', icon: LifeBuoyIcon, current: false },
-  { name: 'Leads', href: '/leads', icon: CurrencyDollarIcon, current: false },
-  { name: 'Archive', href: '/archive', icon: BriefcaseIcon, current: false },
-]
+  { name: 'Dashboard', href: '/', icon: HomeIcon },
+  { name: 'Campaigns', href: '/dashboard/campaign', icon: Waypoints },
+  { name: 'Chat', href: '/chat', icon: ChatBubbleOvalLeftIcon },
+  { name: 'Support Center', href: '/support-center', icon: LifeBuoyIcon },
+  { name: 'Leads', href: '/leads', icon: CurrencyDollarIcon },
+  { name: 'Archive', href: '/archive', icon: BriefcaseIcon },
+];
 
 const userNavigation = [
   { name: 'Your profile', href: '#' },
   { name: 'Sign out', href: '#' },
-]
+];
 
-function classNames(...classes:string[]) {
-  return classes.filter(Boolean).join(' ')
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function DashboardLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const location = useLocation()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const user = useSelector(selectUser);
+
+  // Determine if the current path matches the link
+  const isActive = (href: string) => location.pathname === href;
 
   const getTitle = () => {
     switch (location.pathname) {
       case '/dashboard/campaign':
-        return 'Campaigns'
+        return 'Campaigns';
       case '/chat':
-        return 'Chat'
+        return 'Chat';
       case '/support-center':
-        return 'Support Center'
+        return 'Support Center';
       case '/leads':
-        return 'Leads'
+        return 'Leads';
       case '/archive':
-        return 'Archive'
+        return 'Archive';
       default:
-        return 'Dashboard'
+        return 'Dashboard';
     }
-  }
+  };
 
   return (
     <>
       <div>
-        <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+        <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative lg:hidden">
           <DialogBackdrop
             transition
             className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
@@ -86,11 +90,7 @@ export default function DashboardLayout() {
               </TransitionChild>
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
-                  />
+<p className=' text-3xl text-violet-600'>Orbút</p>
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -101,7 +101,7 @@ export default function DashboardLayout() {
                             <a
                               href={item.href}
                               className={classNames(
-                                item.current
+                                isActive(item.href)
                                   ? 'bg-gray-50 text-indigo-600'
                                   : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -110,7 +110,7 @@ export default function DashboardLayout() {
                               <item.icon
                                 aria-hidden="true"
                                 className={classNames(
-                                  item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                                  isActive(item.href) ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
                                   'h-6 w-6 shrink-0',
                                 )}
                               />
@@ -129,12 +129,9 @@ export default function DashboardLayout() {
 
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
-            <div className="flex h-16 shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
-              />
+            <div className="flex h-16 shrink-0 items-center justify-between">
+            <p className=' text-3xl text-violet-700 font-bold'>Orbút</p>
+            
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -145,16 +142,16 @@ export default function DashboardLayout() {
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
-                              ? 'bg-gray-100 text-gray-700 border-2 border-zinc-200 '
-                              : 'text-gray-700 hover:bg-zinc-100  hover:text-black-600',
+                            isActive(item.href)
+                              ? 'bg-gray-100 text-gray-700 border-2 border-zinc-200'
+                              : 'text-gray-700 hover:bg-zinc-100 hover:text-black-600',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
                           )}
                         >
                           <item.icon
                             aria-hidden="true"
                             className={classNames(
-                              item.current ? 'text-zinc-900' : 'text-black ',
+                              isActive(item.href) ? 'text-zinc-900' : 'text-black',
                               'h-6 w-6 shrink-0',
                             )}
                           />
@@ -171,7 +168,7 @@ export default function DashboardLayout() {
 
         <div className="lg:pl-72 lg:pt-5">
           <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
-            <div className="flex h-16 items-center justify-between gap-x-4  bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
+            <div className="flex h-16 items-center justify-between gap-x-4 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
               <div className="flex items-center gap-x-4 self-stretch lg:gap-x-6">
                 <button
                   type="button"
@@ -203,9 +200,8 @@ export default function DashboardLayout() {
                     />
                     <span className="hidden lg:flex lg:items-center">
                       <span aria-hidden="true" className="ml-4 text-sm font-semibold leading-6 text-gray-900">
-                      Yaw Agyeman-Gyekye
+                        {user}
                       </span>
-
                     </span>
                   </MenuButton>
                   <MenuItems
@@ -230,11 +226,11 @@ export default function DashboardLayout() {
 
           <main className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <Outlet/>
+              <Outlet />
             </div>
           </main>
         </div>
       </div>
     </>
-  )
+  );
 }

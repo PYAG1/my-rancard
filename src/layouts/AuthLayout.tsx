@@ -1,6 +1,8 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
+
+
   return (
     <>
       <div className="flex min-h-screen flex-1 overflow-hidden ">

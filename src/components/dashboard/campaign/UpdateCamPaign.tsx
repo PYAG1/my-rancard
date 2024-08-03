@@ -1,39 +1,40 @@
 
 
-import { useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { PlusCircleIcon } from '@heroicons/react/24/outline'
-import TextField from '@/components/core-ui/text-field'
-import { useFormik } from 'formik'
-import TextAreaField from '@/components/core-ui/text-area'
 import CustomSelect from '@/components/core-ui/custom-select'
 import { DatePickerDemo } from '@/components/core-ui/date-picker'
-import { XMarkIcon } from '@heroicons/react/20/solid'
-import { Loader2 } from 'lucide-react'
-import axios from 'axios'
-import toast from 'react-hot-toast'
-import { useDispatch, useSelector } from 'react-redux'
+import TextAreaField from '@/components/core-ui/text-area'
+import TextField from '@/components/core-ui/text-field'
 import { selectAuth } from '@/redux/AuthSlice'
+import { Campaign } from '@/types'
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/20/solid'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import axios from 'axios'
+import { useFormik } from 'formik'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 
-export default function CreateCampaign() {
+export default function UpdateCampaign({data}:{data:Campaign}) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-
+ 
   const {userToken} = useSelector(selectAuth)
 
   const CamPaignFormik= useFormik({
     initialValues:{
-  name:"",
-  description:"",
-  start_date:"",
-  end_date:"",
-  banner_url:"",
-  status:""
+  name:data?.name,
+  description:data?.description,
+  start_date:data?.start_date,
+  end_date:data?.end_date,
+  banner_url:data?.banner_url,
+  status:data?.status
     },onSubmit:async (values, {resetForm}) =>{
         setLoading(true);
         try {
-          const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/campaigns`,
+          const response = await axios.put(
+          `https://test.quups.app/api/campaigns/${data.id}`,
             values,{
                 headers: {
                 
@@ -51,11 +52,12 @@ export default function CreateCampaign() {
            
           }
         } catch (error) {
-                  //@ts-ignore
+            //@ts-ignore
           toast.error(error.message);
         } finally {
           setLoading(false);
           resetForm()
+          setOpen(false)
         }
     },
   })
@@ -64,11 +66,9 @@ export default function CreateCampaign() {
          <button
       
       onClick={()=> setOpen(true)}
-      className="relative mt-5  w-full flex gap-2 justify-center items-center rounded-lg border-2 border-dashed border-gray-300 p-8 text-center hover:border-gray-400 focus:outline-none "
-    >
-<PlusCircleIcon className=' w-5 h-5 text-black' />
-      <span className=" block text-lg text-gray-900 ">Add Campaign</span>
-    </button>
+          className=" flex gap-2 items-center" ><PencilSquareIcon className=" w-5 h-5 "/> Edit</button>
+
+   
     <Dialog open={open} onClose={setOpen} className="relative z-50">
       <DialogBackdrop
         transition
@@ -84,12 +84,12 @@ export default function CreateCampaign() {
             <div>
               <div className="mt-3 text-left sm:mt-5">
                 <DialogTitle as="h3" className=" text-xl font-semibold leading-6 flex justify-between items-center text-gray-900">
-               Create Campaign
+              Update Campaign
              <button onClick={()=> setOpen(false)}>  <XMarkIcon className=' w-5 h-5'/></button>
                 </DialogTitle>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-Add a new Campaign by filling the necessary details
+Edit Campaign details by filling in the necessary details.
                   </p>
                 </div>
                 <form className=' flex flex-col gap-5 my-4'>
@@ -148,7 +148,7 @@ Add a new Campaign by filling the necessary details
                         {loading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  "Create Campaign"
+                  "Update Campaign"
                 )}
               </button>
               <button

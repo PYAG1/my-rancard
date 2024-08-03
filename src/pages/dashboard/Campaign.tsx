@@ -1,13 +1,17 @@
 import { FunnelIcon } from "@heroicons/react/24/outline";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
-  ArrowDownIcon,
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
-  ArrowUpIcon,
   ArrowUpRightIcon,
 } from "@heroicons/react/20/solid";
+import CampaignItem from "../../components/dashboard/campaign/CampaignItem";
+import CreateCampaign from "@/components/dashboard/campaign/createCampaign";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/redux/AuthSlice";
+import toast from "react-hot-toast";
+import { Campaign } from "@/types";
 
 const stats = [
   {
@@ -38,14 +42,51 @@ function classNames(...classes: string[]) {
 }
 
 export default function CampaignsPage() {
+  const [loading, setLoading] = useState(false);
+  const [draftCampaigns, setDraftCampaigns] = useState([]);
+  const [inProgressCampaigns, setInProgressCampaigns] = useState([]);
+  const [completedCampaigns, setCompletedCampaigns] = useState([]);
+
+  const { userToken } = useSelector(selectAuth);
+
+  const getAllCampaigns = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/campaigns`, {
+        
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      if (response.status === 200) {
+        const campaigns = response.data.data;
+        const drafts = campaigns?.filter((campaign:any) => campaign.status === "");
+        const inProgress = campaigns?.filter((campaign:any) => campaign.status === 'IN_PROGRESS');
+        const completed = campaigns?.filter((campaign:any) => campaign.status === 'COMPLETED');
+
+        setDraftCampaigns(drafts);
+        setInProgressCampaigns(inProgress);
+        setCompletedCampaigns(completed);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, []);
+
   return (
     <div className=" w-full">
       <div className=" w-full md:flex md:justify-between">
         <div>
           <p className=" text-4xl font-semibold">Your total revenue</p>
-          <p className="bg-gradient-to-r from-[#e644d0] via-[#f28884] text-4xl font-semibold to-[#fec640] bg-clip-text text-transparent">Ghc 6,609,604.00</p>
-
-
+          <p className="bg-gradient-to-r from-[#e644d0] via-[#f28884] text-4xl font-semibold to-[#fec640] bg-clip-text text-transparent">
+            Ghc 6,609,604.00
+          </p>
         </div>
         <div className=" flex gap-5 items-center mt-5 md:mt-0">
           <button
@@ -79,8 +120,8 @@ export default function CampaignsPage() {
                 <div
                   className={classNames(
                     item.changeType === "increase"
-                      ? "bg-green-100 text-green-900"
-                      : "bg-red-100 text-red-800",
+                      ? "bg-green-100 text-green-500"
+                      : "bg-red-100 text-red-500",
                     "inline-flex items-baseline rounded-lg px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0"
                   )}
                 >
@@ -95,14 +136,6 @@ export default function CampaignsPage() {
                       className="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-red-500"
                     />
                   )}
-
-                  <span className="sr-only">
-                    {" "}
-                    {item.changeType === "increase"
-                      ? "Increased"
-                      : "Decreased"}{" "}
-                    by{" "}
-                  </span>
                   {item.change}
                 </div>
               </span>
@@ -121,31 +154,45 @@ export default function CampaignsPage() {
 
       <div className="container mx-auto p-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className=" flex items-center">
+          <div>
             <h2 className="text-base mb-4 flex items-center gap-2 ">
               Draft{" "}
-              <div className="rounded bg-gray-300 px-2 py-1 text-xs font-semibold text-black ">
-                1
+              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
+                {draftCampaigns?.length}
               </div>
             </h2>
+        <div className=" w-full flex flex-col gap-3">
+        {draftCampaigns?.map((campaign:Campaign) => (
+              <CampaignItem key={campaign.id} data={campaign} />
+            ))}
+        </div>
+            <CreateCampaign />
           </div>
-          <div className=" flex items-center">
-            <div className=" flex items-center">
-              <h2 className="text-base mb-4 flex items-center gap-2 ">
-                In Progress{" "}
-                <div className="rounded bg-gray-300 px-2 py-1 text-xs font-semibold text-black ">
-                  1
-                </div>
-              </h2>
+          <div className="">
+            <h2 className="text-base mb-4 flex items-center gap-2 ">
+              In Progress{" "}
+              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
+                {inProgressCampaigns?.length}
+              </div>
+            </h2>
+            <div className=" w-full flex flex-col gap-3">
+            {inProgressCampaigns?.map((campaign:Campaign) => (
+              <CampaignItem key={campaign.id} data={campaign} />
+            ))}
             </div>
           </div>
-          <div className=" flex items-center">
+          <div className="items-center">
             <h2 className="text-base mb-4 flex items-center gap-2 ">
-             Completed
-              <div className="rounded bg-gray-300 px-2 py-1 text-xs font-semibold text-black ">
-                1
+              Completed
+              <div className="rounded bg-gray-200 px-2 py-1 text-xs font-semibold text-black ">
+                {completedCampaigns?.length}
               </div>
             </h2>
+            <div className=" w-full flex flex-col gap-3">
+            {completedCampaigns?.map((campaign:Campaign) => (
+              <CampaignItem key={campaign?.id} data={campaign} />
+            ))}
+            </div>
           </div>
         </div>
       </div>

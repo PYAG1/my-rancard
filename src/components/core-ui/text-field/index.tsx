@@ -28,7 +28,7 @@ export default function TextField({
       </label>
       <div className="relative mt-1.5">
         <input
-          className="border w-full border-zinc-600 text-base font-normal placeholder:text-gray-400 rounded-md ring-primary focus:ring-primary focus:border-primary pl-3 py-3 pr-10"
+          className="border w-full border-zinc-500 text-base font-normal placeholder:text-gray-400 rounded-md ring-primary focus:ring-primary focus:border-primary pl-3 py-3 pr-10"
           type={showPassword ? 'text' : type}
           id={id}
           name={id}

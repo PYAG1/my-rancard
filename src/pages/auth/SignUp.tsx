@@ -1,24 +1,16 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import React, { useEffect, useState } from "react";
-import TextField from "../../components/core-ui/text-field";
-import { Loader2 } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { SignUpMutation } from "../../actions/mutations";
-import toast from "react-hot-toast";
 import axios from "axios";
+import { useFormik } from "formik";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import TextField from "../../components/core-ui/text-field";
 
 export default function SignUp() {
   const nav= useNavigate()
-  const {
-    isPending: loading,
-    mutate: Signup,
-    isSuccess,
-    isError,
-    error,
-    data,
-  } = useMutation({ mutationFn: SignUpMutation, onSuccess: () => {} });
+  const [loading,setLoading]=useState(false)
+
   const SignUpFormik = useFormik({
     initialValues: {
       email: "",
@@ -36,16 +28,20 @@ export default function SignUp() {
       name: Yup.string().required("Name is required"),
       msisdn: Yup.string().required("Mobile number is required"),
     }),
-    onSubmit: async (values, formikHelpers) => {
-    
+    onSubmit: async (values,{resetForm}) => {
+    setLoading(true)
      try {
-      const response= await  axios.post("/", values)
+      const response= await  axios.post(  `${import.meta.env.VITE_BASE_URL}/create-account`, values)
       if(response.status === 200){
         toast.success(response.data?.message);
         nav("/dashboard/campaigns")
       }
      } catch (error) {
+            //@ts-ignore
       toast.error(error?.message);
+     }finally{
+      setLoading(false)
+      resetForm()
      }
      
     },

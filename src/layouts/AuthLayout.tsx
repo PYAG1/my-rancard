@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import background from "../../src/assets/2148422461.jpg"
+import background from "../../src/assets/2148422461.jpg";
 export default function AuthLayout() {
 const location= useLocation()
 

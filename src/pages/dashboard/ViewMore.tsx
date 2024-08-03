@@ -1,13 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { selectAuth } from '@/redux/AuthSlice';
+import { useCampaignContext } from '@/context';
 import { Campaign } from '@/types';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CampaignItem from '../../components/dashboard/campaign/CampaignItem';
-import { useCampaignContext } from '@/context';
 
 const statuses = ['ALL', 'DRAFT', 'IN_PROGRESS', 'COMPLETED'];
 

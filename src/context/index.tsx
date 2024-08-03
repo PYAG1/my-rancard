@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import axios from 'axios';
-import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { selectAuth } from "@/redux/AuthSlice";
 import { Campaign } from "@/types";
+import axios from 'axios';
+import { createContext, useCallback, useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const CampaignContext = createContext(null);
 
@@ -44,4 +44,4 @@ const ContextProvider = ({ children }) => {
   );
 };
 
-export { CampaignContext, useCampaignContext, ContextProvider };
+export { CampaignContext, ContextProvider, useCampaignContext };

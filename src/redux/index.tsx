@@ -1,14 +1,14 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import {
-  persistReducer,
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./AuthSlice";
@@ -47,4 +47,5 @@ const persistor = persistStore(store);
 setupListeners(store.dispatch);
 
 
-export { store, persistor };
+export { persistor, store };
+

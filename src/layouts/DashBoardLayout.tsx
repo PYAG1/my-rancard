@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Outlet, useLocation } from 'react-router-dom';
 import { selectUser } from '@/redux/AuthSlice';
 import {
   Dialog,
@@ -22,6 +19,9 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { LifeBuoyIcon, Waypoints } from 'lucide-react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },

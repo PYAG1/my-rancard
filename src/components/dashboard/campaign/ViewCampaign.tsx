@@ -152,7 +152,7 @@ export function ViewCampaign({ data }: { data: Campaign }) {
           </Button>
           <Popover>
             <PopoverTrigger asChild>
-              <Button className="bg-red-500 w-full hover:bg-red-700">Delete</Button>
+              <Button className="bg-red-500 w-full md:w-max hover:bg-red-700">Delete</Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <div className="grid gap-4">

@@ -1,4 +1,4 @@
-import { selectUser } from '@/redux/AuthSlice';
+import { selectUser, signOut } from '@/redux/AuthSlice'; // Import the signOut action
 import {
   Dialog,
   DialogBackdrop,
@@ -20,8 +20,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { LifeBuoyIcon, Waypoints } from 'lucide-react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -45,6 +45,8 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Determine if the current path matches the link
   const isActive = (href: string) => location.pathname === href;
@@ -64,6 +66,12 @@ export default function DashboardLayout() {
       default:
         return 'Dashboard';
     }
+  };
+
+  
+  const handleSignOut = () => {
+    dispatch(signOut());
+    navigate('/auth/signin');
   };
 
   return (
@@ -90,7 +98,7 @@ export default function DashboardLayout() {
               </TransitionChild>
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
-<p className=' text-3xl text-violet-600'>Orbút</p>
+                  <p className='text-3xl text-violet-600'>Orbút</p>
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -130,8 +138,7 @@ export default function DashboardLayout() {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center justify-between">
-            <p className=' text-3xl text-violet-700 font-bold'>Orbút</p>
-            
+              <p className='text-3xl text-violet-700 font-bold'>Orbút</p>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -210,12 +217,12 @@ export default function DashboardLayout() {
                   >
                     {userNavigation.map((item) => (
                       <MenuItem key={item.name}>
-                        <a
-                          href={item.href}
-                          className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                        <button
+                          onClick={item.name === 'Sign out' ? handleSignOut : null}
+                          className="block w-full text-left px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
                         >
                           {item.name}
-                        </a>
+                        </button>
                       </MenuItem>
                     ))}
                   </MenuItems>

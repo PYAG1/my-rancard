@@ -6,7 +6,8 @@ import DashboardLayout from "../layouts/DashBoardLayout";
 import CampaignsPage from "../pages/dashboard/Campaign";
 import App from "../pages/App";
 import ViewMore from "@/pages/dashboard/ViewMore";
-
+import ProtectedRoute from "@/lib/ProtectedRoutes";
+const user = localStorage.getItem("token")
 export const router = createBrowserRouter([
     {
         path:"/",
@@ -30,7 +31,10 @@ export const router = createBrowserRouter([
     }
     ,{
         path:"/dashboard/",
-        element:<DashboardLayout/>,
+        element:<ProtectedRoute user={user}>
+            
+            <DashboardLayout/>
+        </ProtectedRoute>,
         children:[{
             path:"campaign",
             element:<CampaignsPage/>

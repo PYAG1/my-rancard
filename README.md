@@ -56,10 +56,7 @@ The AuthState interface defines the shape of the authentication state:
 - isSignout: A boolean indicating whether the user is signed out.
 - userToken: A string or null representing the user's token.
 - user: The user's data (type can be replaced with your actual user type).
-## Contributing
-If you would like to contribute to this project, follow these steps:
-1. Fork the repository and clone it to your local machine.
-2. Create a new branch for your feature or bug fix:
+
 
 #### Initial State
 The initial state of the authentication slice is defined as follows:

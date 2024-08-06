@@ -20,15 +20,14 @@ RanCard Front-End Developer Project
 Dillinger uses a number of open source projects to work properly:
 
 - [React ] - HTML enhanced for web apps!
-- [Typescript] - awesome web-based text editor
+- [Typescript] 
 
 
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
+
 
 ## Installation
 
-Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
+
 
 Install the dependencies and devDependencies and start the server.
 
